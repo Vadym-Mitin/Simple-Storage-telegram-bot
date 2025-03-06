@@ -1,9 +1,29 @@
+version: '3.8'
+
 services:
-  mongodb:
-    image: 'mongo:latest'
-    environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=root'
+  builder:
+    image: gradle:8.12-jdk23-alpine
+    volumes:
+      - build_output:/home/gradle/build
+    working_dir: /home/gradle/project
+    command: ["gradle", "build", "-x", "test"]
+    user: gradle
+
+  app:
+    image: eclipse-temurin:23-jdk-alpine
+    depends_on:
+      - builder
+    volumes:
+      - build_output:/app
+    entrypoint: ["java", "-jar", "/app/storagebot-0.0.1-SNAPSHOT.jar"]
+    container_name: storagebot
+    restart: unless-stopped
     ports:
-      - '27017'
+      - "8080:8080"
+    labels:
+      org.name: "drib"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+volumes:
+  build_output:
