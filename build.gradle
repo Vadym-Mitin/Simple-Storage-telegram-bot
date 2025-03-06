@@ -1,0 +1,87 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+	id "com.github.ben-manes.versions" version "${githubBenManesVersion}"
+	id "com.palantir.git-version" version "${gitVersion}"
+}
+
+group = 'org.drib'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+// allow BuildProperties bean to be used to get project info: version, name, time and group
+springBoot {
+	buildInfo()
+}
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenapiWeb}"
+
+	implementation "com.github.spullara.mustache.java:compiler:${mustacheVersion}"
+	implementation "org.telegram:telegrambots-spring-boot-starter:${telegramBotsVersion}"
+	implementation "com.nimbusds:nimbus-jose-jwt:${nimbusJwtVersion}"
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo:${embedMongoVersion}"
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	beforeTest { descriptor -> logger.lifecycle("Running test: " + descriptor)
+	}
+	testLogging.showStandardStreams = true
+	testLogging.exceptionFormat = 'full'
+
+	// link: https://stackoverflow.com/questions/77951485/getting-a-java-agent-has-been-loaded-warning-in-intellij-after-upgrading-jdk-17
+	jvmArgs("-noverify", "-XX:+EnableDynamicAgentLoading", "-Djdk.instrument.traceUsage")
+}
+
+processResources {
+	def gitFolder = new File('.git')
+	if (!gitFolder.exists()) {
+		return
+	}
+	filter(ReplaceTokens, tokens: [appVersion: gitVersion()])
+}
+
+tasks.register('showVersion') {
+	doLast {
+		def gitFolder = new File('.git')
+		if (!gitFolder.exists()) {
+			return
+		}
+		println "\nCurrent version: ${gitVersion()}\n"
+
+		def details = versionDetails()
+		println "last tag          : ${details.lastTag}"
+		println "commit distance   : ${details.commitDistance}"
+		println "hash              : ${details.gitHash}"
+		println "branch name       : ${details.branchName}"
+		println "is clean tag      : ${details.isCleanTag}"
+	}
+}

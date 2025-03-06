@@ -1,0 +1,79 @@
+application:
+  version: ${APP_SERVICE_Version:@appVersion@}
+
+server:
+  port: ${PORT:8080}
+
+logging:
+  level:
+    root: ${APP_SERVICE_ROOT_LOG_LEVEL:INFO}
+    org.springframework: ${APP_SERVICE_SPRING_LOG_LEVEL:INFO}
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: ${APP_SERVICE_NAME:app-service}
+  jpa:
+    # enable logging of SQL statements.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 50
+
+  data:
+    mongodb:
+      uri: ${APP_SERVICE_MONGODB_URI:uri}
+      database: ${APP_SERVICE_MONGODB_DATABASE:app-telegram-rss-service-db}
+      auto-index-creation: true
+
+telegram:
+  bot:
+    username: ${APP_SERVICE_TELEGRAM_BOT_USERNAME:bot_name}
+    token: ${APP_SERVICE_TELEGRAM_BOT_TOKEN:app_token}
+
+rss:
+  publish:
+    topic:
+      limit: ${APP_SERVICE_RSS_PUBLISH_TOPIC_LIMIT:10}
+
+md5Hash:
+  calculation:
+    baseOn:
+      link: ${APP_SERVICE_CALCULATE_MD5_ONLY_FOR_LINK:true}
+
+template:
+  default: ${APP_SERVICE_TEMPLATE_DEFAULT:"{{title}} \n {{link}}"}
+
+filter:
+  criteria:
+    title: ${APP_SERVICE_FILTER_CRITERIA_ONLY_FOR_TITLE:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+
+springdoc:
+  swagger-ui:
+    path: /api/documentation
+
+scheduled:
+  processing:
+    publisher:
+      cron: ${APP_SERVICE_SCHEDULER_PROCESSING_PUBLISHER_CRONE:0 */1 * * * *}
+    cleaner:
+      cron: ${APP_SERVICE_SCHEDULER_PROCESSING_CLEANER_CRONE:0 0 */2 * * *}
+    rss:
+      cron: ${APP_SERVICE_SCHEDULER_PROCESSING_RSS_CRONE:0 */15 * * * *}
+
+jwt:
+  app:
+    enable_security: ${APP_SERVICE_ENABLE_JWT_SECURITY:true}
+    secret: ${APP_RSS_PROCESSOR_SERVICE_JWT_SECRET_KEY:jwt_key}
