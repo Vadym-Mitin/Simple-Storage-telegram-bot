@@ -31,10 +31,15 @@ spring:
       database: ${APP_SERVICE_MONGODB_DATABASE:app-telegram-rss-service-db}
       auto-index-creation: true
 
+telegrambots:
+  enabled: true
+
 telegram:
   bot:
     username: ${APP_SERVICE_TELEGRAM_BOT_USERNAME:bot_name}
     token: ${APP_SERVICE_TELEGRAM_BOT_TOKEN:app_token}
+    path: ${APP_SERVICE_TELEGRAM_BOT_PATH:bot_path}
+    url: ${APP_SERVICE_TELEGRAM_BOT_WEBHOOK_URL:bot_url}
 
 template:
   default: ${APP_SERVICE_TEMPLATE_DEFAULT:"{{title}} \n {{link}}"}
