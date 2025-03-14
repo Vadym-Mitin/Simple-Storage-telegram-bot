@@ -1,6 +1,7 @@
 package org.drib.storagebot;
 
 import org.drib.storagebot.bot.StorageWebHookBot;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -12,14 +13,27 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.updatesreceivers.ServerlessWebhook;
 
 @Configuration
-
 public class BotConfig {
 
+    @Value("${telegram.bot.token}")
     private String botToken;
+    @Value("${telegram.bot.url}")
+    private String botWebhookUrl;
+    @Value("${telegram.bot.url.secret}")
+    private String botWebhookUrlSecret;
 
     @Bean
-    public TelegramWebhookBot storageBot() {
-        SetWebhook webhookOptions = new SetWebhook();
+    public SetWebhook webhookOptions() {
+        return SetWebhook.builder()
+                .url(botWebhookUrl)
+                .secretToken(botWebhookUrlSecret)
+//                .allowedUpdates()
+//                .certificate()
+                .build();
+    }
+
+    @Bean
+    public TelegramWebhookBot storageBot(SetWebhook webhookOptions) {
         DefaultBotOptions botOptions = new DefaultBotOptions();
 
         return new StorageWebHookBot(botOptions, webhookOptions, botToken);

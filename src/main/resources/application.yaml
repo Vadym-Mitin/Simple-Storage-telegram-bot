@@ -40,6 +40,7 @@ telegram:
     token: ${APP_SERVICE_TELEGRAM_BOT_TOKEN:app_token}
     path: ${APP_SERVICE_TELEGRAM_BOT_PATH:bot_path}
     url: ${APP_SERVICE_TELEGRAM_BOT_WEBHOOK_URL:bot_url}
+    url.secret: ${APP_SERVICE_TELEGRAM_BOT_WEBHOOK_URL_SECRET:bot_url_secret}
 
 template:
   default: ${APP_SERVICE_TEMPLATE_DEFAULT:"{{title}} \n {{link}}"}
