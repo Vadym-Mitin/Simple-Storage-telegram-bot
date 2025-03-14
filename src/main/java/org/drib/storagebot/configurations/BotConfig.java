@@ -1,6 +1,7 @@
-package org.drib.storagebot;
+package org.drib.storagebot.configurations;
 
 import org.drib.storagebot.bot.StorageWebHookBot;
+import org.drib.storagebot.security.BotUrlSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +20,13 @@ public class BotConfig {
     private String botToken;
     @Value("${telegram.bot.url}")
     private String botWebhookUrl;
-    @Value("${telegram.bot.url.secret}")
-    private String botWebhookUrlSecret;
+
 
     @Bean
-    public SetWebhook webhookOptions() {
+    public SetWebhook webhookOptions(BotUrlSecret botUrlSecret) {
         return SetWebhook.builder()
                 .url(botWebhookUrl)
-                .secretToken(botWebhookUrlSecret)
+                .secretToken(botUrlSecret.getToken())
 //                .allowedUpdates()
 //                .certificate()
                 .build();
