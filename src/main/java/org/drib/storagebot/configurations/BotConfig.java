@@ -5,6 +5,7 @@ import org.drib.storagebot.security.BotUrlSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -40,6 +41,7 @@ public class BotConfig {
     }
 
     @Bean
+    @Profile("!test")
     public TelegramBotsApi telegramBotsApi() throws TelegramApiException {
         ServerlessWebhook webhook = new ServerlessWebhook();
         return new TelegramBotsApi(DefaultBotSession.class, webhook);
