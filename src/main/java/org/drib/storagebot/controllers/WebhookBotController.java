@@ -35,6 +35,7 @@ public class WebhookBotController {
 
     @PostMapping(path = "/{botPath}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public Response updateReceived(@RequestParam("botPath") String botPath, @RequestBody Update update) {
+        log.debug("Receiving request to path:{}, the request: {}", botPath, update);
         if (callbacks.containsKey(botPath)) {
             try {
                 BotApiMethod<?> response = callbacks.get(botPath).onWebhookUpdateReceived(update);

@@ -3,7 +3,7 @@ package org.drib.storagebot.util;
 import java.security.SecureRandom;
 
 public class SecretTokenUtil {
-    private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+    public static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
     private final static SecureRandom RANDOM = new SecureRandom();
 
 
