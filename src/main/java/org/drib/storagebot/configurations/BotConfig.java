@@ -11,6 +11,7 @@ import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.starter.SpringWebhookBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.updatesreceivers.ServerlessWebhook;
 
@@ -34,7 +35,7 @@ public class BotConfig {
     }
 
     @Bean
-    public TelegramWebhookBot storageBot(SetWebhook webhookOptions) {
+    public SpringWebhookBot storageBot(SetWebhook webhookOptions) {
         DefaultBotOptions botOptions = new DefaultBotOptions();
 
         return new StorageWebHookBot(botOptions, webhookOptions, botToken);
