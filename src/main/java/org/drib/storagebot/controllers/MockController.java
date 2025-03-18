@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/v1/mock")
@@ -17,4 +19,8 @@ public class MockController {
         return "You Are The Best!!";
     }
 
+    @GetMapping("/env")
+    public Map<String, String> getEnvironmentVariables() {
+        return System.getenv();
+    }
 }

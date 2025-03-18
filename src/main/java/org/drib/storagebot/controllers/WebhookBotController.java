@@ -7,14 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.Constants;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException;
+import org.telegram.telegrambots.starter.SpringWebhookBot;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -24,9 +27,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class WebhookBotController {
 
     @Autowired
-    private final Set<TelegramWebhookBot> bots;
+    private final Set<SpringWebhookBot> bots;
 
-    private final ConcurrentHashMap<String, TelegramWebhookBot> callbacks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, SpringWebhookBot> callbacks = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void registerCallback() {
@@ -60,4 +63,28 @@ public class WebhookBotController {
             return "Callback not found for " + botPath;
         }
     }
+
+    @PostMapping(path = "/establish", produces = APPLICATION_JSON_VALUE)
+    public Response establishWebhook() {
+        log.debug("Establishing webhook");
+        return ofNullable(System.getenv("RENDER_EXTERNAL_URL"))
+                .map(url -> {
+                    log.debug("Establishing webhook {}", System.getenv("RENDER_EXTERNAL_URL"));
+
+                    for (SpringWebhookBot bot : bots) {
+                        try {
+                            SetWebhook setWebhook = bot.getSetWebhook();
+                            setWebhook.setUrl(url);
+                            bot.setWebhook(setWebhook);
+                        } catch (TelegramApiException e) {
+                            log.error(e.getLocalizedMessage(), e);
+                            return Response.serverError().build();
+                        }
+                    }
+                    return Response.ok().build();
+                })
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+
 }

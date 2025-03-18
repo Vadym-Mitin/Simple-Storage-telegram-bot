@@ -44,7 +44,8 @@ public class BotConfig {
     @Profile("!test")
     public TelegramBotsApi telegramBotsApi() throws TelegramApiException {
         ServerlessWebhook webhook = new ServerlessWebhook();
-        return new TelegramBotsApi(DefaultBotSession.class, webhook);
+        return new TelegramBotsApi(DefaultBotSession.class);
+//        return new TelegramBotsApi(DefaultBotSession.class, webhook);
     }
 
 }
