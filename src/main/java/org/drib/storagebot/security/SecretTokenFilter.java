@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,6 +16,7 @@ import static java.util.Optional.ofNullable;
 
 @Component
 @RequiredArgsConstructor
+@Profile("test")
 public class SecretTokenFilter extends OncePerRequestFilter {
 
     @Autowired

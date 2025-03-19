@@ -4,11 +4,13 @@ import org.drib.storagebot.security.SecretTokenFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class FilterConfig {
 
     @Bean
+    @Profile("test")
     public FilterRegistrationBean<SecretTokenFilter> secretTokenFilterRegister(SecretTokenFilter secretTokenFilter) {
         FilterRegistrationBean<SecretTokenFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(secretTokenFilter);
