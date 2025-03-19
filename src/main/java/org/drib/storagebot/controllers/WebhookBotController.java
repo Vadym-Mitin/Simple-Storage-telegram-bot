@@ -37,7 +37,7 @@ public class WebhookBotController {
     }
 
     @PostMapping(path = "/{botPath}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public Response updateReceived(@RequestParam("botPath") String botPath, @RequestBody Update update) {
+    public Response updateReceived(@PathVariable("botPath") String botPath, @RequestBody Update update) {
         log.debug("Receiving request to path:{}, the request: {}", botPath, update);
         if (callbacks.containsKey(botPath)) {
             try {
@@ -56,7 +56,7 @@ public class WebhookBotController {
     }
 
     @GetMapping(path = "/{botPath}", produces = APPLICATION_JSON_VALUE)
-    public String testReceived(@RequestParam("botPath") String botPath) {
+    public String testReceived(@PathVariable("botPath") String botPath) {
         if (callbacks.containsKey(botPath)) {
             return "Hi there " + botPath + "!";
         } else {
