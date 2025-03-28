@@ -2,6 +2,7 @@ package org.drib.storagebot.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.drib.storagebot.util.SecretTokenUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,9 @@ public class MockController {
 
     private static String id;
 
+    @Value("${telegram.bot.url}")
+    private String telegramBotUrl;
+
     public MockController() {
         id = SecretTokenUtil.generateToken(10);
     }
@@ -34,6 +38,8 @@ public class MockController {
         Map<String, String> getenv = new HashMap<>(System.getenv());
         String appServiceTelegramBotWebhookUrl = System.getenv("APP_SERVICE_TELEGRAM_BOT_WEBHOOK_URL");
         getenv.put("App Service Telegram Bot Webhook Url Environment Variable", appServiceTelegramBotWebhookUrl);
+        getenv.put("App Service Telegram Bot Webhook Url System Property Variable", telegramBotUrl);
+
         return getenv;
     }
 }
