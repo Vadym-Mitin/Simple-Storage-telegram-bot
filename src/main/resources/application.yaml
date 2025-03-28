@@ -58,8 +58,7 @@ management:
 springdoc:
   swagger-ui:
     path: /api/documentation
-  show:
-    actuator: ${APP_SERVICE_EXPOSE_ACTUATOR_API:false}
+  show-actuator: ${APP_SERVICE_EXPOSE_ACTUATOR_API:false}
 
 scheduled:
   processing:
