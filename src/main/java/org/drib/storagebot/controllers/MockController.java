@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 
 @Slf4j
 @RestController
@@ -21,7 +23,7 @@ public class MockController {
         id = SecretTokenUtil.generateToken(10);
     }
 
-    @GetMapping("/whoami")
+    @RequestMapping(path = "/whoami", method = {GET, HEAD})
     public String whoAmI() {
         log.debug("/whoami was called");
         return "I am the %s".formatted(id);
@@ -29,7 +31,7 @@ public class MockController {
 
     @GetMapping("/env")
     public Map<String, String> getEnvironmentVariables() {
-        Map<String, String> getenv = System.getenv();
+        Map<String, String> getenv = new HashMap<>(System.getenv());
         String appServiceTelegramBotWebhookUrl = System.getenv("APP_SERVICE_TELEGRAM_BOT_WEBHOOK_URL");
         getenv.put("App Service Telegram Bot Webhook Url Environment Variable", appServiceTelegramBotWebhookUrl);
         return getenv;
